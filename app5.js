@@ -4,6 +4,40 @@ const app = express();
 app.set('view engine', 'ejs');
 app.use("/public", express.static(__dirname + "/public"));
 
+// 第8回：京葉線の駅データ（本来はDBに置くデータ）
+let station = [
+  { id:1, code:"JE01", name:"東京駅"},
+  { id:2, code:"JE07", name:"舞浜駅"},
+  { id:3, code:"JE12", name:"新習志野駅"},
+  { id:4, code:"JE13", name:"幕張豊砂駅"},
+  { id:5, code:"JE14", name:"海浜幕張駅"},
+  { id:6, code:"JE05", name:"新浦安駅"},
+];
+
+// 一覧表示（単純に列挙）
+app.get("/keiyo", (req, res) => {
+  // 本来ならここにDBとのやり取りが入る
+  res.render('db1', { data: station });
+});
+
+// 一覧表示（表形式）
+app.get("/keiyo_table", (req, res) => {
+  res.render('db2', { data: station });
+});
+
+// データの追加
+app.get("/keiyo_add", (req, res) => {
+  let id = req.query.id;
+  let code = req.query.code;
+  let name = req.query.name;
+  let newdata = { id: id, code: code, name: name };
+  station.push( newdata );
+  // 例1：登録後にデータ入力画面へ戻す場合
+  // res.redirect('/public/keiyo_add.html');
+  // 例2：登録後にデータ一覧を表示する場合
+  res.render('db2', { data: station });
+});
+
 app.get("/hello1", (req, res) => {
   const message1 = "Hello world";
   const message2 = "Bon jour";
